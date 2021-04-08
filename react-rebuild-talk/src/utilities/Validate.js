@@ -1,4 +1,7 @@
-const obj_rep = {
+/* eslint-disable no-useless-escape */
+import Constant from './Constant'
+
+var obj_rep = {
   'Ã€': 'À',
   'Ã': 'Á',
   'Ã‚': 'Â',
@@ -135,7 +138,7 @@ const obj_rep = {
   'á»¹': 'ỹ',
 }
 
-const obj_rep_x = {
+var obj_rep_x = {
   '\u00c3\u20ac': '\u00c0',
   '\u00c3\u0081': '\u00c1',
   '\u00c3\u201a': '\u00c2',
@@ -272,219 +275,209 @@ const obj_rep_x = {
   '\u00e1\u00bb\u00b9': '\u1ef9',
 }
 
-export const validateEmail = (email) => {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  return re.test(String(email).toLowerCase())
-}
+var Validate = {
+  // check email
+  validateEmail(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return re.test(String(email).toLowerCase())
+  },
+  // check so dien thoai
+  validateMobile(mobile) {
+    // neu input nhap vao
+    if (typeof mobile !== 'string') {
+      return false
+    }
 
-export const validateMobile = (mobile) => {
-  // neu input nhap vao
-  if (typeof mobile !== 'string') {
+    if (!mobile) return false
+
+    var match = mobile.match(
+      /(0)+(9[0-9]|12[0-9]|16[0-9]|18[0-9]|99[0-9]|7[0-9]|8[0-9]|3[0-9]|5[0-9]|19[0-9]|5[0-9])\d{7}$/
+    )
+    if (match != null && match.length >= 1 && mobile.substr(0, 1) === '0') {
+      return true
+    }
+
     return false
-  }
+  },
+  // check ten day du
+  validateFullname(fullname) {
+    if (!fullname) return false
+    fullname = fullname.toLowerCase()
+    var match = fullname.match(
+      /^[0123456789a-zàáâãèéêìíòóôõùúýỳỹỷỵựửữừứưụủũợởỡờớơộổỗồốọỏịỉĩệểễềếẹẻẽặẳẵằắăậẩẫầấạảđ₫ ]+$/
+    )
+    if (match != null && match.length >= 1) {
+      return true
+    }
 
-  if (!mobile) return false
+    var special = fullname.match(/^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/)
+    if (special != null) {
+      return true
+    }
+    return false
+  },
 
-  var match = mobile.match(
-    /(0)+(9[0-9]|12[0-9]|16[0-9]|18[0-9]|99[0-9]|7[0-9]|8[0-9]|3[0-9]|5[0-9]|19[0-9]|5[0-9])\d{7}$/
-  )
-  if (match != null && match.length >= 1 && mobile.substr(0, 1) === '0') {
-    return true
-  }
+  iOSversion() {
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test
+    if (/iP(hone|od|ad)/.test(navigator.platform)) {
+      var v = navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/)
+      return [parseInt(v[1], 10)]
+    }
+  },
 
-  return false
-}
+  getAndroidVersion(ua) {
+    ua = (ua || navigator.userAgent).toLowerCase()
+    var match = ua.match(/android\s([0-9.]*)/)
+    return match ? match[1] : 0
+  },
 
-export const validateFullname = (fullname) => {
-  if (!fullname) return false
-  fullname = fullname.toLowerCase()
-  var match = fullname.match(
-    /^[0123456789a-zàáâãèéêìíòóôõùúýỳỹỷỵựửữừứưụủũợởỡờớơộổỗồốọỏịỉĩệểễềếẹẻẽặẳẵằắăậẩẫầấạảđ₫ ]+$/
-  )
-  if (match != null && match.length >= 1) {
-    return true
-  }
+  getMobileOperatingSystem() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera
+    if (/windows phone/i.test(userAgent)) return 'Windows Phone'
+    if (/android/i.test(userAgent)) return 'Android'
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) return 'iOS'
+    return null
+  },
 
-  var special = fullname.match(/^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/)
-  if (special != null) {
-    return true
-  }
-  return false
-}
-
-export const iOSversion = () => {
-  if (/iP(hone|od|ad)/.test(navigator.platform)) {
-    var v = navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/)
-    return [parseInt(v[1], 10)]
-  }
-}
-
-export const getAndroidVersion = (ua) => {
-  ua = (ua || navigator.userAgent).toLowerCase()
-  var match = ua.match(/android\s([0-9.]*)/)
-  return match ? match[1] : 0
-}
-
-export const getMobileOperatingSystem = () => {
-  var userAgent = navigator.userAgent || navigator.vendor || window.opera
-  if (/windows phone/i.test(userAgent)) return 'Windows Phone'
-  if (/android/i.test(userAgent)) return 'Android'
-  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) return 'iOS'
-  return null
-}
-
-export const requestPost = (url, data, cb, count = 0) => {
-  try {
-    var xhr = new XMLHttpRequest()
-    xhr.withCredentials = true
-    xhr.addEventListener('readystatechange', function () {
-      if (this.readyState === 4) {
-        //convert data nhan tu api
-        var datax = JSON.parse(this.responseText)
-        if (datax.continueRequest) {
-          Validate.requestPost(datax.continueRequest, data, cb, count + 1)
-        } else {
-          cb(null, JSON.parse(this.responseText))
+  requestPost(url, data, cb, count = 0) {
+    try {
+      var xhr = new XMLHttpRequest()
+      xhr.withCredentials = true
+      xhr.addEventListener('readystatechange', function () {
+        if (this.readyState === 4) {
+          //convert data nhan tu api
+          var datax = JSON.parse(this.responseText)
+          if (datax.continueRequest) {
+            Validate.requestPost(datax.continueRequest, data, cb, count + 1)
+          } else {
+            cb(null, JSON.parse(this.responseText))
+          }
         }
+      })
+
+      xhr.open('POST', url)
+      xhr.onerror = function (err) {
+        cb('Vui lòng kiểm tra lại đường truyền mạng....', null)
       }
-    })
 
-    xhr.open('POST', url)
-    xhr.onerror = function (err) {
-      cb('Vui lòng kiểm tra lại đường truyền mạng....', null)
-    }
-
-    xhr.timeout = 5000
-    xhr.ontimeout = function (e) {
-      cb('Vui lòng kiểm tra lại đường truyền mạng....', null)
-    }
-    // gui request len api chooseAcount
-    if (
-      url !== Constant.API_BASE_URL + 'chooseAccount' &&
-      url !== Constant.API_BASE_URL + 'checkLogin'
-    ) {
-      xhr.setRequestHeader('Content-Type', 'application/json')
-      xhr.setRequestHeader('Accept', 'application/json')
-    }
-
-    xhr.send(data)
-  } catch (error) {
-    cb('Vui lòng kiểm tra lại đường truyền mạng.....', null)
-  }
-}
-
-export const sendError = (
-  action,
-  acc,
-  from_api,
-  to_api,
-  req,
-  res,
-  ext = 'error'
-) => {
-  try {
-    var obj = {
-      topic: 'userlog',
-      type: 'error',
-      source: 'frontend',
-      action: action,
-      acc: acc,
-      from_api: from_api,
-      to_api: to_api,
-      req: req,
-      res: res,
-      ext: ext,
-    }
-
-    var str = ''
-    for (var key in obj) {
-      if (str !== '') {
-        str += '&'
+      xhr.timeout = 5000
+      xhr.ontimeout = function (e) {
+        cb('Vui lòng kiểm tra lại đường truyền mạng....', null)
       }
-      str += key + '=' + encodeURIComponent(obj[key])
-    }
-
-    var data = null
-    var xhr = new XMLHttpRequest()
-
-    xhr.open('GET', Constant.API_SEND_LOG + str)
-    xhr.timeout = 2000
-    xhr.send(data)
-  } catch (err) {}
-}
-
-export const sendSuccess = (
-  action,
-  acc,
-  from_api,
-  to_api,
-  req,
-  res,
-  ext = 'success'
-) => {
-  try {
-    var obj = {
-      topic: 'userlog',
-      type: 'success',
-      source: 'frontend',
-      action: action,
-      acc: acc,
-      from_api: from_api,
-      to_api: to_api,
-      req: req,
-      res: res,
-      ext: ext,
-    }
-
-    var str = ''
-    for (var key in obj) {
-      if (str !== '') {
-        str += '&'
+      // gui request len api chooseAcount
+      if (
+        url !== Constant.API_BASE_URL + 'chooseAccount' &&
+        url !== Constant.API_BASE_URL + 'checkLogin'
+      ) {
+        xhr.setRequestHeader('Content-Type', 'application/json')
+        xhr.setRequestHeader('Accept', 'application/json')
       }
-      str += key + '=' + encodeURIComponent(obj[key])
+
+      xhr.send(data)
+    } catch (error) {
+      cb('Vui lòng kiểm tra lại đường truyền mạng.....', null)
+    }
+  },
+
+  sendError(action, acc, from_api, to_api, req, res, ext = 'error') {
+    try {
+      var obj = {
+        topic: 'userlog',
+        type: 'error',
+        source: 'frontend',
+        action: action,
+        acc: acc,
+        from_api: from_api,
+        to_api: to_api,
+        req: req,
+        res: res,
+        ext: ext,
+      }
+
+      var str = ''
+      for (var key in obj) {
+        if (str !== '') {
+          str += '&'
+        }
+        str += key + '=' + encodeURIComponent(obj[key])
+      }
+
+      var data = null
+      var xhr = new XMLHttpRequest()
+
+      xhr.open('GET', Constant.API_SEND_LOG + str)
+      xhr.timeout = 2000
+      xhr.send(data)
+    } catch (err) {}
+  },
+
+  sendSuccess(action, acc, from_api, to_api, req, res, ext = 'success') {
+    try {
+      var obj = {
+        topic: 'userlog',
+        type: 'success',
+        source: 'frontend',
+        action: action,
+        acc: acc,
+        from_api: from_api,
+        to_api: to_api,
+        req: req,
+        res: res,
+        ext: ext,
+      }
+
+      var str = ''
+      for (var key in obj) {
+        if (str !== '') {
+          str += '&'
+        }
+        str += key + '=' + encodeURIComponent(obj[key])
+      }
+
+      var data = null
+      var xhr = new XMLHttpRequest()
+
+      xhr.open('GET', Constant.API_SEND_LOG + str)
+      xhr.timeout = 2000
+      xhr.send(data)
+    } catch (err) {}
+  },
+
+  allReplace(retStr) {
+    for (var x in obj_rep) {
+      retStr = retStr.replace(new RegExp(x, 'g'), obj_rep[x])
     }
 
-    var data = null
-    var xhr = new XMLHttpRequest()
+    for (var y in obj_rep_x) {
+      retStr = retStr.replace(new RegExp(y, 'g'), obj_rep_x[y])
+    }
 
-    xhr.open('GET', Constant.API_SEND_LOG + str)
-    xhr.timeout = 2000
-    xhr.send(data)
-  } catch (err) {}
+    return retStr
+  },
+
+  parseURLParams(url) {
+    var queryStart = url.indexOf('?') + 1,
+      queryEnd = url.indexOf('#') + 1 || url.length + 1,
+      query = url.slice(queryStart, queryEnd - 1),
+      pairs = query.replace(/\+/g, ' ').split('&'),
+      parms = {},
+      i,
+      n,
+      v,
+      nv
+
+    if (query === url || query === '') return
+
+    for (i = 0; i < pairs.length; i++) {
+      nv = pairs[i].split('=', 2)
+      n = decodeURIComponent(nv[0])
+      v = decodeURIComponent(nv[1])
+
+      if (!parms.hasOwnProperty(n)) parms[n] = []
+      parms[n].push(nv.length === 2 ? v : null)
+    }
+    return parms
+  },
 }
 
-export const allReplace = () => {
-  for (var x in obj_rep) {
-    retStr = retStr.replace(new RegExp(x, 'g'), obj_rep[x])
-  }
-
-  for (var y in obj_rep_x) {
-    retStr = retStr.replace(new RegExp(y, 'g'), obj_rep_x[y])
-  }
-
-  return retStr
-}
-
-export const parseURLParams = (url) => {
-  var queryStart = url.indexOf('?') + 1,
-    queryEnd = url.indexOf('#') + 1 || url.length + 1,
-    query = url.slice(queryStart, queryEnd - 1),
-    pairs = query.replace(/\+/g, ' ').split('&'),
-    parms = {},
-    i,
-    n,
-    v,
-    nv
-
-  if (query === url || query === '') return
-
-  for (i = 0; i < pairs.length; i++) {
-    nv = pairs[i].split('=', 2)
-    n = decodeURIComponent(nv[0])
-    v = decodeURIComponent(nv[1])
-
-    if (!parms.hasOwnProperty(n)) parms[n] = []
-    parms[n].push(nv.length === 2 ? v : null)
-  }
-  return parms
-}
+export default Validate
