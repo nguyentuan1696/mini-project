@@ -5,7 +5,7 @@ const AppContext = React.createContext()
 const AppProvider = ({ children }) =>
 {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [isModalOpen, setIsOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const openSidebar = () =>
   {
@@ -16,8 +16,23 @@ const AppProvider = ({ children }) =>
   {
     setIsSidebarOpen(false)
   }
+
+    const openModal = () => {
+      setIsModalOpen(true)
+    }
+
+    const closeModal = () => {
+      setIsModalOpen(false)
+    }
   return (
-    <AppContext.Provider>
+    <AppContext.Provider value={{
+      isModalOpen,
+      isSidebarOpen,
+      openModal,
+      openSidebar,
+      closeModal,
+      closeSidebar
+    }}>
       {children}
     </AppContext.Provider>
   )
