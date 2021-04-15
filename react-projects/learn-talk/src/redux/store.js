@@ -7,7 +7,6 @@ const initialState = {
 }
 
 export const store = createStore(reducer, initialState)
-console.log(store)
 
 
 
