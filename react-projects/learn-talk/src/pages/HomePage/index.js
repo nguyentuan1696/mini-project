@@ -1,18 +1,27 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { Link, Redirect } from 'react-router-dom'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Validate from '../../utilities/Validate'
 import Constant from '../../utilities/Constant'
 import CustomScroll from '../../utilities/CustomScroll'
 
 const HomePage = () => {
+  const dispatch = useDispatch()
+  // get gia tri accounnt luu tren global store
+  const tmp_data = ''
+  // const tmp_data = useSelector(({accountStore}) => accountStore.values)
+
   const [error, setError] = useState(null)
   let [account, setAccount] = useState('')
   const [accCookie, setAccCookie] = useState('')
   const [loading, setLoading] = useState(false)
+  const [data, setData] = useState('')
+  const [popUp, setPopUp] = useState(false)
+  const [quickLogin, setQuickLogin] = useState(false)
 
   const myRef = useRef(null)
-  const tmp_data = ''
+
   const accProps = ''
 
   /* Handle event back button */
@@ -146,16 +155,37 @@ const HomePage = () => {
             let userInfo = {}
             if (dataRes.signal === 4 || dataRes.signal === 5) {
               userInfo = {
-                acc: account.toLocaleLowerCase() ? account.toLocaleLowerCase() : accProps.toLowerCase()
+                acc: account.toLocaleLowerCase()
+                  ? account.toLocaleLowerCase()
+                  : accProps.toLowerCase(),
               }
             } else {
               userInfo = {
                 avatar: dataRes.data.avatar,
-                name: dataRes.data.fullname ? dataRes.data.fullname : dataRes.data.username,
-                acc: dataRes.data.acc
+                name: dataRes.data.fullname
+                  ? dataRes.data.fullname
+                  : dataRes.data.username,
+                acc: dataRes.data.acc,
               }
             }
 
+            // dispatch(AccountAction.setDataAccount(userInfo))
+
+            setData(dataRes)
+            if (dataRes.signal === 4 || dataRes.signal === 5) setPopUp(true)
+            if (dataRes.signal === 6) setQuickLogin(true)
+          } else {
+            Validate.sendError(
+              'login',
+              account.toLocaleLowerCase()
+                ? account.toLocaleLowerCase()
+                : accProps.toLocaleLowerCase(),
+              window.location.href,
+              Constant.API_BASE_URL + 'checkpass',
+              JSON.stringify(data),
+              JSON.stringify(dataRes),
+              dataRes.message
+            )
           }
         }
       }
@@ -224,9 +254,4 @@ const HomePage = () => {
   )
 }
 
-const mapDispatchToProps = (dispath, ownsProps) =>
-{
-  console.log(dispath)
-}
-
-export default connect(null, mapDispatchToProps)(HomePage)
+export default connect()(HomePage)

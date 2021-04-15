@@ -1,12 +1,11 @@
-
+import { SET_ACCOUNT } from './actions'
 import reducer from './reducer'
 import { createStore } from 'redux'
 
 const initialState = {
- acc: ''
+  acc: '',
 }
 
 export const store = createStore(reducer, initialState)
-
 
 
