@@ -10,9 +10,9 @@ import (
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"    //mysql database driver
 	_ "github.com/jinzhu/gorm/dialects/postgres" //postgres database driver
-
 	"github.com/nguyentuan1696/fullstack/api/models"
 )
+
 
 type Server struct {
 	DB     *gorm.DB
@@ -42,6 +42,17 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		} else {
 			fmt.Printf("We are connected to the %s database", Dbdriver)
 		}
+	}
+	if Dbdriver == "sqlite3" {
+		//DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbPort, DbUser, DbName, DbPassword)
+		server.DB, err = gorm.Open(Dbdriver, DbName)
+		if err != nil {
+			fmt.Printf("Cannot connect to %s database\n", Dbdriver)
+			log.Fatal("This is the error:", err)
+		} else {
+			fmt.Printf("We are connected to the %s database\n", Dbdriver)
+		}
+		server.DB.Exec("PRAGMA foreign_keys = ON")
 	}
 
 	server.DB.Debug().AutoMigrate(&models.User{}, &models.Post{}) //database migration
