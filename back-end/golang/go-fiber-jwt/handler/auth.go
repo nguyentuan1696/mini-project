@@ -1,2 +1,5 @@
 package handler
 
+func CheckPasswordHash() {
+	
+}
